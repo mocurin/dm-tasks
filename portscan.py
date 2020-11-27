@@ -10,7 +10,7 @@ from request_utils import request_server_info_via_http, request_server_info_via_
 
 
 DEFAULT_CHUNKSIZE = 5
-DEFAULT_TIMEOUT = 0.001
+DEFAULT_TIMEOUT = 0.01
 
 
 if __name__ == '__main__':
@@ -33,7 +33,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # Suppress stack trace when throwing an exception - somewhat console style errors
-    if not args.debug: sys.tracebacklimit = 0
+    if not args.debug:
+        sys.tracebacklimit = 0
 
     address_range = ipaddress.ip_network(args.range).hosts()
     address_range = map(str, address_range)
@@ -47,8 +48,9 @@ if __name__ == '__main__':
         results = p.imap_unordered(connect_function,
                                    address_port_pairs,
                                    chunksize=args.chunksize)
-        for (address, port), cb_results in filter(None, results):
+        for (address, port), callback_results in filter(None, results):
             print(f"{address} {port} OPEN")
-            if cb_results:
-                for res in cb_results:
-                    print(res)
+            if not callback_results:
+                continue
+            for res in callback_results:
+                print(res)

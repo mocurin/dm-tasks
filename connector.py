@@ -13,10 +13,12 @@ class Connector:
         :param timeout: block time on socket connection
         :param on_connect_callbacks: functions to execute over socket & `address_port_pair`
         """
+        if on_connect_callbacks is None:
+            on_connect_callbacks = []
         self.timeout = timeout
         self.on_connect_callbacks = on_connect_callbacks
 
-    def __call__(self, address_port_pair: Tuple[str, float]):
+    def __call__(self, address_port_pair: Tuple[str, int]):
         """
         Try to establish connection with `address_port_pair` & launch callbacks on success
 
@@ -26,12 +28,10 @@ class Connector:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.settimeout(self.timeout)
             err = sock.connect_ex(address_port_pair)
-            if not err:
-                cb_results = None
-                if self.on_connect_callbacks is not None:
-                    sock.settimeout(socket.getdefaulttimeout())
-                    cb_results = [cb(sock, address_port_pair)
-                                  for cb in self.on_connect_callbacks]
-                    cb_results = filter(None, cb_results)
-                return address_port_pair, cb_results
-        return None
+            if err:
+                return None
+            sock.settimeout(socket.getdefaulttimeout())
+            cb_results = [cb(sock, address_port_pair)
+                          for cb in self.on_connect_callbacks]
+            cb_results = filter(None, cb_results)
+            return address_port_pair, cb_results
