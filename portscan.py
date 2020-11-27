@@ -35,9 +35,9 @@ if __name__ == '__main__':
     # Suppress stack trace when throwing an exception - somewhat console style errors
     if not args.debug: sys.tracebacklimit = 0
 
-    addr_range = ipaddress.ip_network(args.range).hosts()
-    addr_range = map(str, addr_range)
-    addr_port_pairs = product(addr_range, args.ports)
+    address_range = ipaddress.ip_network(args.range).hosts()
+    address_range = map(str, address_range)
+    address_port_pairs = product(address_range, args.ports)
     connect_function = Connector(args.timeout,
                                  [request_server_info_via_http,
                                   request_server_info_via_https]
@@ -45,10 +45,10 @@ if __name__ == '__main__':
 
     with Pool(args.workers) as p:
         results = p.imap_unordered(connect_function,
-                                   addr_port_pairs,
+                                   address_port_pairs,
                                    chunksize=args.chunksize)
-        for (addr, port), cb_results in filter(None, results):
-            print(f"{addr} {port} OPEN")
+        for (address, port), cb_results in filter(None, results):
+            print(f"{address} {port} OPEN")
             if cb_results:
                 for res in cb_results:
                     print(res)

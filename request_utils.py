@@ -23,19 +23,19 @@ def find_headers_in_response(response: bytes,
 
 
 def request_server_info_via_http(sock: socket.socket,
-                                 addr_port_pair: Tuple[str, int],
+                                 address_port_pair: Tuple[str, int],
                                  *args, **kwargs) -> str:
     """
     Send request and acquire headers from response.
     Checks if port is 80.
 
     :param sock: socket to operate on
-    :param addr_port_pair: tuple of address string & port
+    :param address_port_pair: tuple of address string & port
     :param args: positional args to forward to `find_headers_in_response`
     :param kwargs: keyword args to forward to `find_headers_in_response`
     :return: single joined string with \r\n string from `find_headers_in_response`
     """
-    address, port = addr_port_pair
+    address, port = address_port_pair
     if port != 80: return ''
 
     request_str = f"HEAD / HTTP/1.1\r\nHost:{address}\r\n\r\n"
@@ -46,19 +46,19 @@ def request_server_info_via_http(sock: socket.socket,
 
 
 def request_server_info_via_https(sock: socket.socket,
-                                  addr_port_pair: Tuple[str, int],
+                                  address_port_pair: Tuple[str, int],
                                   *args, **kwargs) -> str:
     """
     Wrap socket with ssl, send request and acquire headers
     Checks if port is 443.
 
     :param sock: socket to operate on
-    :param addr_port_pair: tuple of address string & port
+    :param address_port_pair: tuple of address string & port
     :param args: positional args to forward to `find_headers_in_response`
     :param kwargs: keyword args to forward to `find_headers_in_response`
     :return: single joined string with \r\n string from `find_headers_in_response`
     """
-    address, port = addr_port_pair
+    address, port = address_port_pair
     if port != 443: return ''
 
     context = ssl.create_default_context()
