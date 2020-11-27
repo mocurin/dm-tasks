@@ -13,13 +13,13 @@ python3.8 portscan.py -w 4 192.168.1.0/24 443 80 21 22 25
 ```
 
 Пример вывода:
-```bash
+```
 192.168.1.1 80 OPEN
 192.168.1.1 443 OPEN
 ```
 
 Help message:
-```bash
+```
 Investigate network for open ports
 
 positional arguments:
